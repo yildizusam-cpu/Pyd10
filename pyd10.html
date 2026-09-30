@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>pyd 10 | Yazarak kod öğren</title>
+<meta name="description" content="Kod bilmeyenler için ücretsiz Türkçe kod yazma çalışması: Python, HTML, JavaScript, Java, C#, C++, PHP, Go ve Rust. 100'den fazla hazır kodu klavyeyle yazarak öğren.">
+<style>
+:root{--bg:#f3f1ea;--panel:#fff;--ink:#14232f;--mute:#5d6b76;--line:#d6d2c4;--ok:#0f8a5f;--okbg:#d5f2e3;--bad:#c92a4b;--badbg:#ffd9e0;--cur:#ffc857;--acc:#14232f;--accink:#f3f1ea;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0d1a24;--panel:#142735;--ink:#e9efe9;--mute:#93a5b1;--line:#28414f;--ok:#7fd6a8;--okbg:#17402f;--bad:#ff8fa3;--badbg:#4a1f2b;--acc:#ffc857;--accink:#0d1a24}}
+:root[data-theme="dark"]{--bg:#0d1a24;--panel:#142735;--ink:#e9efe9;--mute:#93a5b1;--line:#28414f;--ok:#7fd6a8;--okbg:#17402f;--bad:#ff8fa3;--badbg:#4a1f2b;--acc:#ffc857;--accink:#0d1a24}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 ui-sans-serif,system-ui,"Segoe UI",Roboto,sans-serif}
+.mono{font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace}
+header{display:flex;align-items:baseline;justify-content:space-between;gap:12px;padding:18px 16px 6px;max-width:900px;margin:auto}
+h1{margin:0;font:800 34px/1 ui-monospace,Menlo,Consolas,monospace;letter-spacing:-1px}
+h1 span{background:var(--acc);color:var(--accink);padding:0 8px;border-radius:6px;margin-left:4px}
+.sub{color:var(--mute);font-size:14px;padding:0 16px;max-width:900px;margin:0 auto 10px}
+main{max-width:900px;margin:auto;padding:0 16px 40px}
+.bar{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.stat{background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:8px 12px;flex:1;min-width:88px}
+.stat b{display:block;font:700 20px ui-monospace,Menlo,monospace}
+.stat small{color:var(--mute)}
+.lessons{display:flex;gap:8px;overflow-x:auto;padding:4px 0 10px}
+.lessons button{flex:0 0 auto;min-width:112px;text-align:left;border:1px solid var(--line);background:var(--panel);color:var(--ink);border-radius:10px;padding:8px 10px;font:inherit;cursor:pointer}
+.lessons button.on{border:2px solid var(--acc);padding:7px 9px}
+.lessons button:disabled{opacity:.45;cursor:not-allowed}
+#langs button{min-width:0;font-weight:700}
+.lessons small{display:block;color:var(--mute)}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:14px;margin:8px 0}
+.card h2{margin:0 0 4px;font-size:20px}
+.card p{margin:4px 0;color:var(--mute)}
+#target{font:20px/1.7 ui-monospace,"SF Mono",Menlo,Consolas,monospace;white-space:pre-wrap;word-break:break-all;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px;margin:10px 0;cursor:text;min-height:80px}
+#target span{border-radius:3px}
+.c{color:var(--ok);background:var(--okbg)}
+.w{color:var(--bad);background:var(--badbg);text-decoration:underline}
+.cur{background:var(--cur);color:#14232f;animation:bl 1s steps(2) infinite}
+.p{color:var(--mute)}
+@keyframes bl{50%{opacity:.55}}
+@media (prefers-reduced-motion:reduce){.cur{animation:none}}
+textarea{width:100%;min-height:130px;font:17px/1.5 ui-monospace,Menlo,Consolas,monospace;background:var(--panel);color:var(--ink);border:2px solid var(--line);border-radius:10px;padding:10px;resize:vertical}
+textarea:focus,button:focus-visible,input:focus-visible{outline:3px solid var(--cur);outline-offset:1px}
+.row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+.btn{border:0;background:var(--acc);color:var(--accink);font:700 15px inherit;font-family:inherit;padding:10px 14px;border-radius:10px;cursor:pointer}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.out{font-family:ui-monospace,Menlo,monospace;background:#0d1a24;color:#7fd6a8;border-radius:8px;padding:8px 12px;white-space:pre-wrap;margin-top:6px}
+.weak span{display:inline-block;font:700 16px ui-monospace,monospace;background:var(--badbg);color:var(--bad);border-radius:6px;padding:2px 9px;margin:3px 4px 3px 0}
+#res{display:none;border:2px solid var(--ok)}
+.hidden{display:none}
+</style>
+</head>
+<body>
+<header>
+  <h1>pyd<span>10</span></h1>
+  <button class="btn ghost" id="theme" aria-label="Tema değiştir">Tema</button>
+</header>
+<p class="sub">110+ ders. Bir dil seç, hazır kodu gör, klavyeyle aynen yaz, hatalarından öğren.</p>
+<main>
+  <div class="bar">
+    <div class="stat"><b id="sWpm">0</b><small>hız (kelime/dk)</small></div>
+    <div class="stat"><b id="sAcc">100%</b><small>doğruluk</small></div>
+    <div class="stat"><b id="sDone">0/10</b><small>biten ders</small></div>
+  </div>
+  <div class="lessons" id="langs"></div>
+  <div class="lessons" id="list"></div>
+
+  <div class="card">
+    <h2 id="lt"></h2>
+    <p id="ld"></p>
+    <div id="target" tabindex="-1" aria-label="Yazılacak kod"></div>
+    <div class="out hidden" id="outbox"></div>
+    <textarea id="ta" placeholder="Kodu buraya yaz. Girinti için Tab tuşunu kullan." autocapitalize="off" autocomplete="off" autocorrect="off" spellcheck="false"></textarea>
+    <div class="row">
+      <button class="btn ghost" id="again">Baştan başla</button>
+      <button class="btn ghost" id="hint">İpucu: çıktıyı göster</button>
+    </div>
+  </div>
+
+  <div class="card" id="res">
+    <h2 id="rt"></h2>
+    <p id="rm"></p>
+    <div class="row"><button class="btn" id="next">Sonraki ders</button><button class="btn ghost" id="retry">Tekrar yaz</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Seni geliştiren bölüm</h2>
+    <p>Sık yanlış bastığın tuşlar:</p>
+    <div class="weak" id="weak"></div>
+    <div class="row"><button class="btn" id="drill">Zayıf tuş antrenmanı yap</button></div>
+  </div>
+
+  <div class="card">
+    <h2>Kendi kodunu ekle</h2>
+    <p>Beğendiğin bir kodu yapıştır, sonra onu yazarak çalış.</p>
+    <textarea id="mine" placeholder="print('selam')" style="min-height:70px" autocapitalize="off" spellcheck="false"></textarea>
+    <div class="row"><button class="btn ghost" id="addMine">Derse ekle</button><button class="btn ghost" id="reset">İlerlemeyi sıfırla</button></div>
+  </div>
+</main>
+
+<script>
+var PY=[
+{t:'Merhaba Dünya',d:'print() ekrana yazı yazdırır. Tırnak içindeki her şey yazı olur.',c:'print("Merhaba Dünya")',o:'Merhaba Dünya'},
+{t:'Değişken',d:'Değişken, bir bilgiyi saklayan kutudur. = işareti kutuya değer koyar.',c:'isim = "Ali"\nyas = 12\nprint(isim, yas)',o:'Ali 12'},
+{t:'Soru sor',d:'input() kullanıcıya soru sorar ve cevabı kutuya koyar.',c:'ad = input("Adın ne? ")\nprint("Selam", ad)',o:'Adın ne? Ayşe\nSelam Ayşe'},
+{t:'Toplama',d:'Python hesap makinesi gibi çalışır. + toplar, * çarpar.',c:'a = 5\nb = 3\nprint(a + b)\nprint(a * b)',o:'8\n15'},
+{t:'Eğer / değilse',d:'if bir şart sorar. Şart doğruysa girintili satır çalışır.',c:'sayi = 7\nif sayi > 5:\n    print("Büyük")\nelse:\n    print("Küçük")',o:'Büyük'},
+{t:'Döngü (for)',d:'for aynı işi tekrar tekrar yapar. range(1, 6) 1\'den 5\'e sayar.',c:'for i in range(1, 6):\n    print(i)',o:'1\n2\n3\n4\n5'},
+{t:'Liste',d:'Liste, birçok şeyi tek kutuda tutar. append() sona ekler.',c:'meyveler = ["elma", "armut"]\nmeyveler.append("muz")\nprint(meyveler)',o:"['elma', 'armut', 'muz']"},
+{t:'Fonksiyon',d:'def ile kendi komutunu yaparsın. return sonucu geri verir.',c:'def topla(a, b):\n    return a + b\n\nprint(topla(2, 3))',o:'5'},
+{t:'Döngü (while)',d:'while, şart doğru olduğu sürece tekrarlar. += 1 sayıyı bir artırır.',c:'sayac = 0\nwhile sayac < 3:\n    print(sayac)\n    sayac += 1',o:'0\n1\n2'},
+{t:'Mini oyun',d:'Öğrendiklerini birleştir: tahmin oyunu.',c:'gizli = 7\ntahmin = int(input("Tahmin: "))\nif tahmin == gizli:\n    print("Bildin!")\nelse:\n    print("Tekrar dene")',o:'Tahmin: 7\nBildin!'}
+];
+var LANGS=[
+{id:'py',n:'Python',l:PY},
+{id:'html',n:'HTML',l:[
+{t:'İlk sayfa',d:'HTML sayfanın iskeletidir. <h1> büyük başlık, <p> paragraf yapar. Açılan her etiket kapanır.',c:'<h1>Merhaba</h1>\n<p>İlk sayfamı yaptım.</p>',o:'Büyük bir "Merhaba" başlığı ve altında bir yazı'},
+{t:'Liste ve bağlantı',d:'<ul> madde listesi, <li> her madde, <a> tıklanan bağlantıdır.',c:'<ul>\n  <li>Elma</li>\n  <li>Armut</li>\n</ul>\n<a href="https://claude.ai">Git</a>',o:'İki maddelik liste ve "Git" bağlantısı'},
+{t:'Kutu ve buton',d:'<div> bir kutudur, style ile renk verirsin. <button> tıklanan düğmedir.',c:'<div style="background: yellow">\n  <button>Tıkla</button>\n</div>',o:'Sarı kutu içinde "Tıkla" düğmesi'}]},
+{id:'js',n:'JavaScript / TypeScript',l:[
+{t:'JS: Merhaba',d:'console.log() ekrana yazdırır. Satır sonuna ; konur.',c:'console.log("Merhaba");',o:'Merhaba'},
+{t:'JS: Değişken ve fonksiyon',d:'let değişken yapar. function kendi komutunu tanımlar.',c:'let ad = "Ali";\nfunction topla(a, b) {\n  return a + b;\n}\nconsole.log(ad, topla(2, 3));',o:'Ali 5'},
+{t:'JS: Liste döngüsü',d:'const değişmeyen kutudur. for...of listedeki her elemanı sırayla alır.',c:'const liste = [1, 2, 3];\nfor (const x of liste) {\n  console.log(x);\n}',o:'1\n2\n3'},
+{t:'TS: Tipli değişken',d:'TypeScript, JavaScript\'e tip ekler. : string "bu kutuya sadece yazı girer" demektir.',c:'let ad: string = "Ali";\nlet yas: number = 12;\nconsole.log(ad, yas);',o:'Ali 12'},
+{t:'TS: Tipli fonksiyon',d:'Parametreye ve sonuca tip yazarsın. Yanlış tip verirsen editör uyarır.',c:'function topla(a: number, b: number): number {\n  return a + b;\n}\nconsole.log(topla(2, 3));',o:'5'}]},
+{id:'java',n:'Java',l:[
+{t:'Merhaba',d:'Java\'da her şey bir class içindedir. main programın başladığı yerdir.',c:'public class Main {\n    public static void main(String[] args) {\n        System.out.println("Merhaba");\n    }\n}',o:'Merhaba'},
+{t:'Değişkenler',d:'Java tip ister: int tam sayı, String yazıdır.',c:'int sayi = 5;\nString ad = "Ali";\nSystem.out.println(ad + sayi);',o:'Ali5'},
+{t:'Döngü',d:'for üç parça içerir: başlangıç, şart, artış.',c:'for (int i = 1; i <= 3; i++) {\n    System.out.println(i);\n}',o:'1\n2\n3'}]},
+{id:'cs',n:'C#',l:[
+{t:'Merhaba',d:'Console.WriteLine ekrana bir satır yazar.',c:'Console.WriteLine("Merhaba");',o:'Merhaba'},
+{t:'Değişkenler',d:'int tam sayı, string yazıdır. + ile birleştirilir.',c:'int sayi = 5;\nstring ad = "Ali";\nConsole.WriteLine(ad + sayi);',o:'Ali5'},
+{t:'Döngü',d:'Unity oyunlarında da böyle döngü yazarsın.',c:'for (int i = 1; i <= 3; i++)\n{\n    Console.WriteLine(i);\n}',o:'1\n2\n3'}]},
+{id:'c',n:'C / C++',l:[
+{t:'C: Merhaba',d:'#include kütüphane ekler. printf yazdırır. \\n alt satıra geçer.',c:'#include <stdio.h>\n\nint main() {\n    printf("Merhaba\\n");\n    return 0;\n}',o:'Merhaba'},
+{t:'C++: Merhaba',d:'C++ yazdırmak için std::cout kullanır. << veriyi akışa iter.',c:'#include <iostream>\n\nint main() {\n    std::cout << "Merhaba" << std::endl;\n    return 0;\n}',o:'Merhaba'},
+{t:'C++: Döngü',d:'Sayaç i her turda bir artar, 3\'ten büyük olunca döngü biter.',c:'for (int i = 1; i <= 3; i++) {\n    std::cout << i << std::endl;\n}',o:'1\n2\n3'}]},
+{id:'php',n:'PHP',l:[
+{t:'Merhaba',d:'PHP kodu <?php ile başlar. echo ekrana yazar.',c:'<?php\necho "Merhaba";\n?>',o:'Merhaba'},
+{t:'Değişken',d:'PHP\'de her değişken $ ile başlar. Nokta (.) yazıları birleştirir.',c:'<?php\n$ad = "Ali";\necho "Selam " . $ad;\n?>',o:'Selam Ali'},
+{t:'Döngü',d:'for ile sayıları sırayla yazdırırsın.',c:'<?php\nfor ($i = 1; $i <= 3; $i++) {\n    echo $i;\n}\n?>',o:'123'}]},
+{id:'go',n:'Go / Rust',l:[
+{t:'Go: Merhaba',d:'Go\'da package ve import ile başlarsın. fmt.Println yazdırır.',c:'package main\n\nimport "fmt"\n\nfunc main() {\n    fmt.Println("Merhaba")\n}',o:'Merhaba'},
+{t:'Rust: Merhaba',d:'fn fonksiyon demektir. println! sonundaki ünlem bunun bir makro olduğunu gösterir.',c:'fn main() {\n    println!("Merhaba");\n}',o:'Merhaba'},
+{t:'Rust: Değişken',d:'Rust\'ta değişkenler varsayılan olarak değişmez. mut değiştirilebilir yapar.',c:'let ad = "Ali";\nlet mut sayi = 5;\nsayi += 1;\nprintln!("{} {}", ad, sayi);',o:'Ali 6'}]}
+];
+function add(id,arr){var g=LANGS.filter(function(x){return x.id===id})[0];arr.forEach(function(s){var p=s.split('¦');g.l.push({t:p[0],d:p[1],c:p[2],o:p[3]})})}
+add('py',[
+'Metin birleştirme¦+ ile yazılar yan yana gelir.¦ad = "Ali"\nprint("Selam " + ad)¦Selam Ali',
+'f-string¦f"..." içine {} ile değişken koyarsın.¦ad = "Ali"\nyas = 12\nprint(f"{ad} {yas} yaşında")¦Ali 12 yaşında',
+'Büyük harf¦upper() harfleri büyütür, lower() küçültür.¦s = "merhaba"\nprint(s.upper())¦MERHABA',
+'Uzunluk¦len() kaç eleman olduğunu söyler.¦print(len("python"))¦6',
+'Bölme ve kalan¦/ böler, % kalanı verir.¦print(10 / 4)\nprint(10 % 3)¦2.5\n1',
+'Üs alma¦** üs alır.¦print(2 ** 5)¦32',
+'Çift mi tek mi¦Kalan 0 ise sayı çifttir.¦n = 8\nif n % 2 == 0:\n    print("Çift")\nelse:\n    print("Tek")¦Çift',
+'elif¦elif birden fazla şartı sırayla sorar.¦puan = 75\nif puan >= 90:\n    print("A")\nelif puan >= 70:\n    print("B")\nelse:\n    print("C")¦B',
+'ve / veya¦and ikisi de doğruysa, or biri doğruysa çalışır.¦yas = 15\nif yas > 12 and yas < 18:\n    print("Genç")¦Genç',
+'Liste elemanı¦İlk eleman 0. sıradadır, -1 sonuncudur.¦renkler = ["kırmızı", "mavi", "yeşil"]\nprint(renkler[0])\nprint(renkler[-1])¦kırmızı\nyeşil',
+'Liste döngüsü¦for listedeki her elemanı sırayla alır.¦for r in ["a", "b", "c"]:\n    print(r)¦a\nb\nc',
+'Sıralama¦sort() listeyi küçükten büyüğe dizer.¦sayilar = [3, 1, 2]\nsayilar.sort()\nprint(sayilar)¦[1, 2, 3]',
+'Toplam ve en büyük¦sum toplar, max en büyüğü bulur.¦s = [4, 9, 2]\nprint(sum(s))\nprint(max(s))¦15\n9',
+'Sözlük¦Sözlük anahtar ve değer saklar.¦kisi = {"ad": "Ali", "yas": 12}\nprint(kisi["ad"])¦Ali',
+'Sözlük döngüsü¦items() anahtar ve değeri birlikte verir.¦fiyat = {"elma": 5, "muz": 8}\nfor k, v in fiyat.items():\n    print(k, v)¦elma 5\nmuz 8',
+'Çarpım tablosu¦İç içe iki döngü tablo çıkarır.¦for i in range(1, 4):\n    for j in range(1, 4):\n        print(i * j, end=" ")\n    print()¦1 2 3\n2 4 6\n3 6 9',
+'Döngüyü durdur¦break döngüyü bitirir.¦for i in range(10):\n    if i == 3:\n        break\n    print(i)¦0\n1\n2',
+'Atla¦continue o turu atlar.¦for i in range(5):\n    if i == 2:\n        continue\n    print(i)¦0\n1\n3\n4',
+'Varsayılan değer¦Parametreye varsayılan değer verebilirsin.¦def selam(ad="dostum"):\n    print("Selam", ad)\n\nselam()¦Selam dostum',
+'Faktöriyel¦Fonksiyon kendini çağırabilir.¦def fak(n):\n    if n <= 1:\n        return 1\n    return n * fak(n - 1)\n\nprint(fak(5))¦120',
+'Hata yakala¦try hatayı yakalar, program çökmez.¦try:\n    x = int("abc")\nexcept ValueError:\n    print("Sayı değil")¦Sayı değil',
+'Dosyaya yaz¦with dosyayı otomatik kapatır.¦with open("not.txt", "w") as f:\n    f.write("Merhaba")¦not.txt dosyası oluşur',
+'Sınıf¦class nesne kalıbıdır. __init__ ilk kurulumdur.¦class Kedi:\n    def __init__(self, ad):\n        self.ad = ad\n\nk = Kedi("Pamuk")\nprint(k.ad)¦Pamuk',
+'Rastgele sayı¦random kütüphanesi şans işleri içindir.¦import random\nprint(random.randint(1, 6))¦1 ile 6 arası bir sayı',
+'Liste üretimi¦Tek satırda liste yapabilirsin.¦kareler = [x * x for x in range(1, 5)]\nprint(kareler)¦[1, 4, 9, 16]'
+]);
+add('html',[
+'Başlıklar¦h1 en büyük, h6 en küçük başlıktır.¦<h1>Büyük</h1>\n<h2>Orta</h2>\n<h3>Küçük</h3>¦Üç boyutta başlık',
+'Kalın ve eğik¦<b> kalın, <i> eğik yazar.¦<p><b>Kalın</b> ve <i>eğik</i> yazı</p>¦Kalın ve eğik yazı',
+'Resim¦<img> resim koyar. alt resmi anlatır.¦<img src="kedi.jpg" alt="Sevimli kedi">¦Kedi resmi',
+'Numaralı liste¦<ol> numaralı liste yapar.¦<ol>\n  <li>Uyan</li>\n  <li>Kod yaz</li>\n</ol>¦1. Uyan 2. Kod yaz',
+'Form¦<input> yazı kutusu, <label> kutunun adıdır.¦<label>Adın:</label>\n<input type="text">\n<button>Gönder</button>¦Kutu ve düğme',
+'Tablo¦<table> tablo, <tr> satır, <td> hücredir.¦<table>\n  <tr>\n    <td>Ali</td>\n    <td>12</td>\n  </tr>\n</table>¦Tek satırlık tablo',
+'Tam sayfa¦Her sayfa DOCTYPE ile başlar, head ve body içerir.¦<!DOCTYPE html>\n<html>\n<head>\n  <title>Sayfam</title>\n</head>\n<body>\n  <h1>Selam</h1>\n</body>\n</html>¦Başlığı Sayfam olan sayfa'
+]);
+add('js',[
+'JS: Metin birleştirme¦Backtick içinde ${} ile değişken koyarsın.¦const ad = "Ali";\nconsole.log(`Selam ${ad}`);¦Selam Ali',
+'JS: if¦if şart doğruysa çalışır.¦const yas = 15;\nif (yas >= 13) {\n  console.log("Genç");\n}¦Genç',
+'JS: Liste ekleme¦push listenin sonuna ekler.¦const a = [1, 2];\na.push(3);\nconsole.log(a);¦[ 1, 2, 3 ]',
+'JS: map¦map her elemana işlem uygular.¦const s = [1, 2, 3];\nconst k = s.map(x => x * 2);\nconsole.log(k);¦[ 2, 4, 6 ]',
+'JS: filter¦filter şarta uyanları seçer.¦const s = [1, 2, 3, 4];\nconsole.log(s.filter(x => x > 2));¦[ 3, 4 ]',
+'JS: Nesne¦Nesne anahtar ve değer saklar.¦const kisi = { ad: "Ali", yas: 12 };\nconsole.log(kisi.ad);¦Ali',
+'JS: Ok fonksiyonu¦=> kısa fonksiyon yazar.¦const topla = (a, b) => a + b;\nconsole.log(topla(2, 3));¦5',
+'JS: Sayfa öğesi¦document sayfaya erişir. Tarayıcıda çalışır.¦const b = document.querySelector("h1");\nb.textContent = "Yeni başlık";¦Sayfadaki başlık değişir',
+'JS: Tıklama¦addEventListener bir olayı dinler.¦const btn = document.querySelector("button");\nbtn.addEventListener("click", () => {\n  alert("Tıkladın!");\n});¦Düğmeye basınca uyarı çıkar',
+'TS: Dizi tipi¦number[] sadece sayı listesi demektir.¦const s: number[] = [1, 2, 3];\nconsole.log(s.length);¦3',
+'TS: interface¦interface nesnenin şeklini tanımlar.¦interface Kisi {\n  ad: string;\n  yas: number;\n}\nconst k: Kisi = { ad: "Ali", yas: 12 };¦Hata yoksa doğru'
+]);
+add('java',[
+'Metin uzunluğu¦length() harf sayısını verir.¦String s = "Java";\nSystem.out.println(s.length());¦4',
+'if / else¦Şart doğruysa ilk blok çalışır.¦int yas = 15;\nif (yas >= 13) {\n    System.out.println("Genç");\n} else {\n    System.out.println("Çocuk");\n}¦Genç',
+'Dizi¦Dizi sabit uzunlukta listedir.¦int[] s = {4, 8, 15};\nSystem.out.println(s[1]);¦8',
+'while¦Şart doğru olduğu sürece tekrarlar.¦int i = 0;\nwhile (i < 3) {\n    System.out.println(i);\n    i++;\n}¦0\n1\n2',
+'Metot¦Metot kendi komutundur, int dönüş tipidir.¦static int topla(int a, int b) {\n    return a + b;\n}¦topla(2, 3) → 5',
+'ArrayList¦ArrayList büyüyebilen listedir.¦ArrayList<String> l = new ArrayList<>();\nl.add("elma");\nl.add("armut");\nSystem.out.println(l);¦[elma, armut]',
+'Sınıf¦class nesne kalıbıdır, new ile nesne yaparsın.¦class Kedi {\n    String ad = "Pamuk";\n}\nKedi k = new Kedi();\nSystem.out.println(k.ad);¦Pamuk'
+]);
+add('cs',[
+'Yazı okuma¦ReadLine kullanıcıdan yazı alır.¦string ad = Console.ReadLine();\nConsole.WriteLine("Selam " + ad);¦Selam Ali',
+'if / else¦Şart doğruysa ilk blok çalışır.¦int yas = 15;\nif (yas >= 13)\n{\n    Console.WriteLine("Genç");\n}\nelse\n{\n    Console.WriteLine("Çocuk");\n}¦Genç',
+'Dizi¦Köşeli parantez dizi yapar.¦int[] s = {4, 8, 15};\nConsole.WriteLine(s[1]);¦8',
+'List¦List büyüyebilen listedir.¦var l = new List<string>();\nl.Add("elma");\nConsole.WriteLine(l.Count);¦1',
+'foreach¦foreach listedeki her elemanı gezer.¦foreach (var x in new int[] {1, 2, 3})\n{\n    Console.WriteLine(x);\n}¦1\n2\n3',
+'Metot¦static metot kendi komutundur.¦static int Topla(int a, int b)\n{\n    return a + b;\n}¦Topla(2, 3) → 5',
+'Sınıf¦class nesne kalıbıdır. Unity oyunlarında oyuncu böyle tanımlanır.¦class Oyuncu\n{\n    public string Ad = "Ali";\n    public int Can = 100;\n}¦Ad ve Can taşıyan sınıf'
+]);
+add('c',[
+'C: Değişken¦%d tam sayı yazdırır.¦int sayi = 5;\nprintf("%d", sayi);¦5',
+'C: if¦Şartı parantez içine yazarsın.¦int x = 7;\nif (x > 5) {\n    printf("Büyük");\n}¦Büyük',
+'C: for¦Üç parça: başlangıç, şart, artış.¦for (int i = 1; i <= 3; i++) {\n    printf("%d ", i);\n}¦1 2 3',
+'C: Dizi¦Köşeli parantez ile dizi yapılır.¦int s[3] = {4, 8, 15};\nprintf("%d", s[1]);¦8',
+'C++: string¦string yazı tutar.¦std::string ad = "Ali";\nstd::cout << ad << std::endl;¦Ali',
+'C++: vector¦vector büyüyebilen listedir.¦std::vector<int> v = {1, 2, 3};\nv.push_back(4);\nstd::cout << v.size();¦4',
+'C++: Fonksiyon¦int dönüş tipidir.¦int topla(int a, int b) {\n    return a + b;\n}¦topla(2, 3) → 5'
+]);
+add('php',[
+'Sayılar¦PHP hesap yapar. * çarpar.¦<?php\n$a = 5;\n$b = 3;\necho $a * $b;\n?>¦15',
+'if / else¦Şart doğruysa ilk blok çalışır.¦<?php\n$yas = 15;\nif ($yas >= 13) {\n    echo "Genç";\n} else {\n    echo "Çocuk";\n}\n?>¦Genç',
+'Dizi¦array liste yapar.¦<?php\n$m = ["elma", "armut"];\necho $m[0];\n?>¦elma',
+'foreach¦foreach dizideki her elemanı gezer.¦<?php\nforeach ([1, 2, 3] as $x) {\n    echo $x;\n}\n?>¦123',
+'Fonksiyon¦function kendi komutunu yapar.¦<?php\nfunction topla($a, $b) {\n    return $a + $b;\n}\necho topla(2, 3);\n?>¦5',
+'Form verisi¦$_POST formdan gelen veriyi tutar.¦<?php\n$ad = $_POST["ad"];\necho "Selam " . $ad;\n?>¦Selam Ali',
+'Anahtarlı dizi¦Anahtar => değer ile dizi kurulur.¦<?php\n$k = ["ad" => "Ali", "yas" => 12];\necho $k["ad"];\n?>¦Ali'
+]);
+add('go',[
+'Go: Değişken¦:= değişkeni tanımlar ve değer verir.¦x := 5\nname := "Ali"\nfmt.Println(name, x)¦Ali 5',
+'Go: if¦Go şartı parantezsiz yazar.¦x := 7\nif x > 5 {\n    fmt.Println("Büyük")\n}¦Büyük',
+'Go: for¦Go tek döngü türü kullanır: for.¦for i := 1; i <= 3; i++ {\n    fmt.Println(i)\n}¦1\n2\n3',
+'Go: Fonksiyon¦func kendi komutunu yapar.¦func topla(a int, b int) int {\n    return a + b\n}¦topla(2, 3) → 5',
+'Rust: if¦Rust şartı parantezsiz yazar.¦let x = 7;\nif x > 5 {\n    println!("Büyük");\n}¦Büyük',
+'Rust: for¦1..4 sayıları 1, 2, 3 verir.¦for i in 1..4 {\n    println!("{}", i);\n}¦1\n2\n3',
+'Rust: Fonksiyon¦fn kendi komutunu yapar. -> dönüş tipidir.¦fn topla(a: i32, b: i32) -> i32 {\n    a + b\n}¦topla(2, 3) → 5'
+]);
+var S={done:{},weak:{},custom:[],lang:0};
+try{var r=localStorage.getItem('pyd10');if(r)S=Object.assign(S,JSON.parse(r))}catch(e){}
+function save(){try{localStorage.setItem('pyd10',JSON.stringify(S))}catch(e){}}
+var $=function(i){return document.getElementById(i)};
+var li=Math.min(S.lang||0,LANGS.length-1),cur=null,curId=0,start=0,total=0,errs=0,prev=0,finished=false;
+function lessons(){return LANGS[li].l}
+function all(){return lessons().concat(S.custom.filter(function(c){return c.g===LANGS[li].id}))}
+function key(i){return LANGS[li].id+':'+i}
+function stars(a){return a>=95?'★★★':a>=85?'★★☆':'★☆☆'}
+function renderLangs(){
+  var box=$('langs');box.innerHTML='';
+  LANGS.forEach(function(g,i){
+    var b=document.createElement('button');b.textContent=g.n;if(i===li)b.className='on';
+    b.onclick=function(){li=i;S.lang=i;save();renderLangs();openLesson(0)};box.appendChild(b);
+  });
+}
+function renderList(){
+  var box=$('list');box.innerHTML='';var n=0,base=lessons().length;
+  all().forEach(function(l,i){
+    var b=document.createElement('button');
+    var d=S.done[key(i)];if(d&&i<base)n++;
+    var open=i===0||i>=base||S.done[key(i-1)];
+    b.disabled=!open;if(i===curId)b.className='on';
+    b.innerHTML=(i<base?(i+1)+'. ':'+ ')+l.t+'<small>'+(d?stars(d.acc)+' '+d.acc+'%':open?'Hazır':'Kilitli')+'</small>';
+    b.onclick=function(){openLesson(i)};box.appendChild(b);
+  });
+  $('sDone').textContent=n+'/'+base;
+  renderWeak();
+}
+function renderWeak(){
+  var arr=Object.keys(S.weak).sort(function(a,b){return S.weak[b]-S.weak[a]}).slice(0,6);
+  var w=$('weak');w.innerHTML='';
+  if(!arr.length){w.textContent='Henüz hata yok. Devam et!';return}
+  arr.forEach(function(k){var s=document.createElement('span');s.textContent=k==='\n'?'Enter':k===' '?'boşluk':k;w.appendChild(s)});
+}
+function openLesson(i,obj){
+  curId=i;cur=obj||all()[i];
+  $('lt').textContent=cur.t;$('ld').textContent=cur.d;
+  $('outbox').textContent='Çıktı:\n'+(cur.o||'(çalıştırınca görürsün)');
+  $('outbox').classList.add('hidden');$('res').style.display='none';
+  $('ta').value='';start=0;total=0;errs=0;prev=0;finished=false;
+  $('sWpm').textContent='0';$('sAcc').textContent='100%';
+  drawTarget();renderList();$('ta').focus({preventScroll:true});
+}
+function drawTarget(){
+  var t=cur.c,v=$('ta').value,box=$('target');box.innerHTML='';
+  for(var i=0;i<t.length;i++){
+    var s=document.createElement('span'),ch=t[i];
+    s.textContent=ch==='\n'?'↵\n':ch;
+    if(i<v.length)s.className=v[i]===ch?'c':'w';
+    else if(i===v.length)s.className='cur';
+    else s.className='p';
+    box.appendChild(s);
+  }
+}
+function onInput(){
+  if(finished)return;
+  var v=$('ta').value;
+  if(!start&&v.length)start=Date.now();
+  for(var j=prev;j<v.length;j++){
+    total++;
+    if(v[j]!==cur.c[j]){errs++;var k=cur.c[j]||'?';S.weak[k]=(S.weak[k]||0)+1}
+  }
+  prev=v.length;
+  drawTarget();
+  var acc=total?Math.round((total-errs)/total*100):100;
+  $('sAcc').textContent=acc+'%';
+  var m=(Date.now()-start)/60000;
+  if(m>0)$('sWpm').textContent=Math.round(v.length/5/m);
+  if(v===cur.c)finish(acc,m);
+}
+function finish(acc,m){
+  finished=true;var base=lessons().length;
+  var wpm=Math.max(1,Math.round(cur.c.length/5/Math.max(m,0.01)));
+  $('sWpm').textContent=wpm;
+  var best=S.done[key(curId)];
+  if(curId<base&&(!best||acc>=best.acc))S.done[key(curId)]={acc:acc,wpm:wpm};
+  save();
+  $('outbox').classList.remove('hidden');
+  var ok=acc>=85,r=$('res');r.style.display='block';
+  $('rt').textContent=(ok?'Tebrikler! ':'Az kaldı. ')+stars(acc);
+  var msg='Doğruluk %'+acc+', hız '+wpm+' kelime/dk. ';
+  if(ok)msg+=curId<base-1?'Sıradaki ders açıldı.':'Bu bölümü bitirdin! Üstteki listeden başka bir dil seçebilirsin.';
+  else msg+='Sonraki derse geçmek için %85 gerekir. "Zayıf tuş antrenmanı" ile çalışıp tekrar dene.';
+  $('rm').textContent=msg;
+  $('next').style.display=ok&&curId<base-1?'inline-block':'none';
+  renderList();r.scrollIntoView({behavior:'smooth',block:'nearest'});
+}
+$('ta').addEventListener('input',onInput);
+$('ta').addEventListener('paste',function(e){e.preventDefault()});
+$('ta').addEventListener('keydown',function(e){
+  if(e.key==='Tab'){e.preventDefault();this.setRangeText('    ',this.selectionStart,this.selectionEnd,'end');onInput()}
+});
+$('target').onclick=function(){$('ta').focus()};
+$('again').onclick=$('retry').onclick=function(){openLesson(curId,cur)};
+$('hint').onclick=function(){$('outbox').classList.toggle('hidden')};
+$('next').onclick=function(){openLesson(curId+1)};
+function score(t,keys){var s=0;keys.forEach(function(k){s+=t.split(k).length-1});return s}
+$('drill').onclick=function(){
+  var keys=Object.keys(S.weak).sort(function(a,b){return S.weak[b]-S.weak[a]}).slice(0,4);
+  if(!keys.length){alert('Önce bir ders yaz; hatalarına göre antrenman hazırlarım.');return}
+  var lines=[];
+  lessons().forEach(function(l){l.c.split('\n').forEach(function(x){
+    var t=x.trim();if(t&&lines.indexOf(t)<0&&keys.some(function(k){return k!=='\n'&&k!==' '&&t.indexOf(k)>-1}))lines.push(t)})});
+  lines=lines.sort(function(a,b){return score(b,keys)-score(a,keys)}).slice(0,4);
+  if(!lines.length)lines=['pyd 10'];
+  openLesson(curId,{t:'Zayıf tuş antrenmanı',d:'Bu satırlar en çok yanlış bastığın tuşları içeriyor.',c:lines.join('\n'),o:'(antrenman)'});
+};
+$('addMine').onclick=function(){
+  var v=$('mine').value.replace(/\s+$/,'');
+  if(!v){alert('Önce bir kod yaz veya yapıştır.');return}
+  S.custom.push({g:LANGS[li].id,t:'Kodum '+(all().length-lessons().length+1),d:'Kendi eklediğin kod.',c:v,o:''});save();
+  $('mine').value='';openLesson(all().length-1);
+};
+$('reset').onclick=function(){if(confirm('Tüm ilerleme silinsin mi?')){S={done:{},weak:{},custom:[],lang:li};save();openLesson(0)}};
+$('theme').onclick=function(){
+  var d=document.documentElement,dark=getComputedStyle(d).getPropertyValue('--bg').trim()==='#0d1a24';
+  d.setAttribute('data-theme',dark?'light':'dark');
+};
+renderLangs();openLesson(0);
+</script>
+</body>
+</html>
